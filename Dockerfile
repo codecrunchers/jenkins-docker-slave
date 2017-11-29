@@ -1,25 +1,26 @@
 FROM openjdk:8u131-jdk-alpine
 ENV REMOTING_VERSION "3.9"
+ENV USERNAME docker
 
-RUN adduser jenkins -S -G wheel -G ping
-WORKDIR /home/jenkins
-RUN apk --update add curl docker && \ 
-        mkdir -p /home/jenkins/jenkins_agent && \
-        chmod 755 /home/jenkins/jenkins_agent && \ 
+RUN adduser ${USERNAME} -S -G wheel -G ping
+WORKDIR /home/${USERNAME}
+RUN apk --update add curl docker git && \ 
+        mkdir -p /home/${USERNAME}/jenkins_agent && \
+        chmod 755 /home/${USERNAME}/jenkins_agent && \ 
 	mkdir work && \
-        chmod 755 /home/jenkins/work && \
-        chown jenkins /home/jenkins/work -R && \
-        curl --create-dirs -sSLo /home/jenkins/jenkins_agent/slave.jar \
+        chmod 777 /home/${USERNAME}/work && \
+        chown ${USERNAME} /home/${USERNAME}/work -R && \
+        curl --create-dirs -sSLo /home/${USERNAME}/jenkins_agent/slave.jar \
         http://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${REMOTING_VERSION}/remoting-${REMOTING_VERSION}.jar && \
-        chmod 644 /home/jenkins/jenkins_agent/slave.jar && \
-        chown jenkins /home/jenkins/jenkins_agent -R
+        chmod 644 /home/${USERNAME}/jenkins_agent/slave.jar && \
+        chown ${USERNAME} /home/${USERNAME}/jenkins_agent -R
 
 
-USER jenkins
+USER ${USERNAME}
 #for Sonar
-ENTRYPOINT ["java", "-cp", "/home/jenkins/jenkins_agent/slave.jar", "hudson.remoting.jnlp.Main","-headless"]
+ENTRYPOINT ["java", "-cp", "/home/docker/jenkins_agent/slave.jar", "hudson.remoting.jnlp.Main","-headless"]
 #CMD ["--help"]
-ENTRYPOINT ["/bin/sh"]
+#ENTRYPOINT ["/bin/sh"]
 
 
 
