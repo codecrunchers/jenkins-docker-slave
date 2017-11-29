@@ -1,10 +1,9 @@
-FROM alpine
-ENV JDK "jdk-8u131-linux-x64"
+FROM openjdk:8u131-jdk-alpine
 ENV REMOTING_VERSION "3.9"
 
-RUN adduser jenkins -S -h /home/jenkins/ -G wheel -G ping 
+RUN adduser jenkins -S -G wheel -G ping
 WORKDIR /home/jenkins
-RUN apk --update add curl docker openjdk7-jre && \ 
+RUN apk --update add curl docker && \ 
         mkdir -p /home/jenkins/jenkins_agent && \
         chmod 755 /home/jenkins/jenkins_agent && \ 
 	mkdir work && \
