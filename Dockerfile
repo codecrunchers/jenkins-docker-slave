@@ -1,10 +1,15 @@
 FROM openjdk:8u131-jdk-alpine
 ENV REMOTING_VERSION "3.9"
 ENV USERNAME docker
-
-RUN adduser ${USERNAME} -S -G wheel -G ping
 WORKDIR /home/${USERNAME}
-RUN apk --update add curl docker git && \ 
+
+#This is a hardcoded Docker Group ID for the AWS ECS Optimised AMI
+RUN addgroup -g 497 docker && \
+	echo http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+	apk --no-cache add shadow  && \
+	adduser ${USERNAME} -S  && \
+	usermod -a -G docker,wheel,root,ping ${USERNAME} && \
+ 	apk --update add curl docker git openssh-client && \ 
         mkdir -p /home/${USERNAME}/jenkins_agent && \
         chmod 755 /home/${USERNAME}/jenkins_agent && \ 
 	mkdir work && \
