@@ -16,6 +16,5 @@ node('docker_slave') {
         sh '$(aws ecr get-login --no-include-email --region eu-west-1)'
         sh 'docker tag planet9/docker-slave:latest 234585392744.dkr.ecr.eu-west-1.amazonaws.com/prod-pipeline/docker-slave:latest'
         sh 'docker push 234585392744.dkr.ecr.eu-west-1.amazonaws.com/prod-pipeline/docker-slave:latest'
-
     }
 }
